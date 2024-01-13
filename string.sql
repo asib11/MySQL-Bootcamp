@@ -9,3 +9,7 @@ FROM
     books;
 -- replace 
 select replace(title, ' ', '_') from books;
+-- character length
+select char_length(title) as len, title from books;
+-- upper= ucase and lower= lcase
+select concat('I LOVE ', ucase(title), ' !!!') from books;
