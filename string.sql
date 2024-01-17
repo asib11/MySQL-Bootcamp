@@ -79,3 +79,31 @@ SELECT
 FROM
     books
 ORDER BY author_lname; 
+
+-- aggregate Function
+-- count 
+select count(*) from books where title like '%the%'; -- n.b. count does not calculate null value/ ignore null value
+-- group by
+select author_lname, count(*) from books group by author_lname; -- its mean count all rows of each group;
+-- min and max
+-- without group by
+select min(author_fname), max(author_fname) from books;
+-- with group by
+-- select min(author_lname), title form books // this gives us aggregate error
+select author_fname, author_lname, count(*) from books group by author_fname, author_lname;
+select concat(author_fname,' ', author_lname) as author, count(*) from books group by author;
+-- group by min max
+select author_fname, author_lname, min(released_year), max(released_year), count(*) from books group by author_lname, author_fname;
+-- subquery
+select title, released_year from books where pages = (select max(pages) from books);
+-- sum
+select sum(pages) from books;
+select author_lname, sum(pages) from books group by author_lname;
+select 3+2;
+-- exercise
+select count(*) from books ; -- group by released_year;
+select sum(stock_quantity) from books;
+select released_year, count(*) from books group by released_year;
+select concat(author_fname,' ', author_lname) as author,avg(released_year) from books group by author;
+select concat(author_fname,' ', author_lname) as author from books where pages=(select max(pages) from books);
+select released_year as year, count(*) as books, avg(pages) from books  group by released_year order by released_year;
