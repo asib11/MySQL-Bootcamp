@@ -107,3 +107,27 @@ select released_year, count(*) from books group by released_year;
 select concat(author_fname,' ', author_lname) as author,avg(released_year) from books group by author;
 select concat(author_fname,' ', author_lname) as author from books where pages=(select max(pages) from books);
 select released_year as year, count(*) as books, avg(pages) from books  group by released_year order by released_year;
+-- date & time
+create table birthinfo (name varchar(50), bithdate date, birthtime time, birthdt datetime);
+insert into birthinfo (name, bithdate, birthtime, birthdt) values ('asib','1998-07-11', '4:10:20','1998-07-11 4:10:20');
+select * from birthinfo;
+insert into birthinfo (name, birthdate, birthtime, birthdt) values('ahmed', curdate(), curtime(), now());
+alter table birthinfo rename column bithdate to birthdate;
+select birthdate , day(birthdate), dayofweek(birthdate), monthname(birthdt), dayname(birthdt) from birthinfo;
+select birthdt, date_format(birthdt, '%r') from birthinfo;
+-- timestamp
+create table captions (text varchar(150), created_at timestamp default current_timestamp,
+updated_at timestamp on update current_timestamp);
+insert into captions (text) value('i can set captions');
+update captions SET text='i can set caption update' where text='i can set captions';
+select * from captions;
+-- exercise
+create table inventory (item_name varchar(20), price decimal(6.2), quantity tinyint);
+desc inventory;
+select curtime(), curdate(), dayofweek(curdate()), dayname(curdate());
+select date_format(curdate(),'%m/%d/%Y');
+select date_format(now(),'%M %D at %k:%i');
+create table tweets (content varchar(100), username varchar(20), 
+create_at timestamp default now());
+insert into tweets (content, username) values('my first tweet','asib');
+select * from tweets;
