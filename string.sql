@@ -189,3 +189,21 @@ SELECT author_fname, author_lname,
 FROM books
 WHERE author_lname IS NOT NULL
 GROUP BY author_fname, author_lname;
+
+-- constraints and alter
+-- unique
+create table user (name varchar(50) not null, phone int not null unique);
+insert into user (name, phone) values ('asib', 01753249719);
+insert into user (name, phone) values ('ahmed', 01753249719); -- its get error because phone is unique
+
+-- check
+create table info (name varchar(50) not null, age int check(age<0));
+insert into info (name, age) values ('ahmed', 25); -- get error because age is less than 0
+insert into info (name, age) values ('ahmed', -25); 
+
+-- constraint
+create table companies (name varchar(50) not null, address varchar(50) not null, constraint name_address unique(name, address));
+insert into companies (name,address) values('coderize', 'ksuhtia');
+insert into companies (name,address) values('coderize', 'dhaka');
+insert into companies (name,address) values('other_name', 'ksuhtia');
+insert into companies (name,address) values('coderize', 'ksuhtia'); -- get error because its multiple constraints
