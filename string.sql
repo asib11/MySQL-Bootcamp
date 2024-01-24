@@ -207,3 +207,117 @@ insert into companies (name,address) values('coderize', 'ksuhtia');
 insert into companies (name,address) values('coderize', 'dhaka');
 insert into companies (name,address) values('other_name', 'ksuhtia');
 insert into companies (name,address) values('coderize', 'ksuhtia'); -- get error because its multiple constraints
+
+-- one to many and join
+create database shop;
+use shop;
+create table customers (id int primary key auto_increment, first_name varchar(50), last_name varchar(50), email varchar(50));
+create table orders (id int primary key auto_increment, order_date date, amount decimal(8,2),customer_id int, foreign key (customer_id)
+ references customers(id));
+ INSERT INTO customers (first_name, last_name, email) 
+VALUES ('Boy', 'George', 'george@gmail.com'),
+       ('George', 'Michael', 'gm@gmail.com'),
+       ('David', 'Bowie', 'david@gmail.com'),
+       ('Blue', 'Steele', 'blue@gmail.com'),
+       ('Bette', 'Davis', 'bette@aol.com');
+       
+       
+INSERT INTO orders (order_date, amount, customer_id)
+VALUES ('2016-02-10', 99.99, 1),
+       ('2017-11-11', 35.50, 1),
+       ('2014-12-12', 800.67, 2),
+       ('2015-01-03', 12.50, 2),
+       ('1999-04-11', 450.25, 5);
+
+select * from customers,orders; -- cross join
+select * from orders where customer_id = (select id from customers where first_name = 'george');
+-- inner join  join=inner join
+select first_name, order_date, amount from orders join customers on customers.id = orders.customer_id;
+select first_name, order_date, amount from customers inner join orders on  orders.customer_id = customers.id; -- same 
+SELECT 
+    first_name, SUM(amount) AS total
+FROM
+    customers
+        INNER JOIN
+    orders ON orders.customer_id = customers.id
+GROUP BY customers.first_name , customers.last_name
+ORDER BY total; -- group by inner join
+
+-- left join
+select first_name, order_date, amount from customers left join orders on orders.customer_id = customers.id; -- all customers then common orders value
+select first_name, order_date, amount from orders left join customers on orders.customer_id = customers.id;
+-- group by
+SELECT 
+    first_name,
+    IFNULL(SUM(amount), 0) AS spent_money
+FROM
+    customers
+        LEFT JOIN
+    orders ON orders.customer_id = customers.id
+GROUP BY first_name , last_name;
+
+-- right join
+insert into orders (order_date, amount) values(curdate(), 100);
+SELECT 
+    first_name, order_date, amount
+FROM
+    customers
+        RIGHT JOIN
+    orders ON orders.customer_id = customers.id;
+
+-- on delete cascade
+alter table orders drop foreign key orders_ibfk_1;
+alter table orders add foreign key (customer_id) references customers(id) on delete cascade;
+
+-- exercise
+use shop;
+CREATE TABLE students (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    first_name VARCHAR(50)
+);
+
+CREATE TABLE papers (
+    title VARCHAR(100),
+    grade TINYINT,
+    student_id INT,
+    FOREIGN KEY (student_id)
+        REFERENCES students (id)
+        ON DELETE CASCADE
+);
+INSERT INTO students (first_name) VALUES 
+('Caleb'), ('Samantha'), ('Raj'), ('Carlos'), ('Lisa');
+
+INSERT INTO papers (student_id, title, grade ) VALUES
+(1, 'My First Book Report', 60),
+(1, 'My Second Book Report', 75),
+(2, 'Russian Lit Through The Ages', 94),
+(2, 'De Montaigne and The Art of The Essay', 98),
+(4, 'Borges and Magical Realism', 89);
+
+SELECT 
+    first_name, title, grade
+FROM
+    students
+        JOIN
+    papers ON students.id = papers.student_id;
+
+SELECT 
+    first_name, ifnull(title, 'missing'), ifnull(grade, 0)
+FROM
+    students
+        LEFT JOIN
+    papers ON students.id = papers.student_id;
+
+SELECT 
+    first_name,
+    IFNULL(AVG(grade), 0) AS average,
+    CASE
+        WHEN AVG(grade) > 75 THEN 'PASSING'
+        ELSE 'FAILING'
+    END AS passing_status
+FROM
+    students
+        LEFT JOIN
+    papers ON students.id = papers.student_id
+GROUP BY first_name
+ORDER BY average DESC;
