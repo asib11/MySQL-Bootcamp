@@ -321,3 +321,8 @@ FROM
     papers ON students.id = papers.student_id
 GROUP BY first_name
 ORDER BY average DESC;
+
+-- many to many
+create database tv_series;
+use tv_series;
+create table reviewers ( id int primary key auto_increment, first_name varchar(50), last_name varchar(50));
