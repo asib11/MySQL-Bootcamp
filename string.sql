@@ -388,4 +388,47 @@ INSERT INTO review(series_id, reviewer_id, rating) VALUES
     (10,5,9.9),
     (13,3,8.0),(13,4,7.2),
     (14,2,8.5),(14,3,8.9),(14,4,8.9);
-select * from review;
+
+-- inner join
+select title, rating from series join review on series.id = review.series_id;
+select title, avg(rating) as ratings from series join review on series.id = review.series_id group by title order by ratings;
+select first_name,last_name,rating from reviewers join review on reviewers.id = review.reviewer_id;
+-- left join and right join
+select title as unreviewed_title from series left join review on series.id = review.series_id where rating is null;
+select title as unreviewed_title from  review right join series on series.id = review.series_id where rating is null;
+
+SELECT 
+    first_name,
+    last_name,
+    COUNT(rating),
+    IFNULL(MIN(rating), 0),
+    IFNULL(MAX(rating), 0),
+    IFNULL(AVG(rating), 0),
+    CASE
+        WHEN COUNT(rating) > 0 THEN 'ACTIVE'
+        ELSE 'INACTIVE'
+    END AS statuss
+FROM
+    reviewers
+        LEFT JOIN
+    review ON reviewers.id = review.reviewer_id
+GROUP BY first_name , last_name;
+
+-- use cse have only 2 condition
+SELECT 
+    first_name,
+    last_name,
+    COUNT(rating),
+    IFNULL(MIN(rating), 0),
+    IFNULL(MAX(rating), 0),
+    IFNULL(AVG(rating), 0),
+    if(count(rating)>0,'ACTIVE', 'INACTIVE') -- if(condtion, ture, false)
+FROM
+    reviewers
+        LEFT JOIN
+    review ON reviewers.id = review.reviewer_id
+GROUP BY first_name , last_name;
+-- two join together
+select title, rating, concat(first_name,' ', last_name) as nam from
+reviewers join review on reviewers.id = review.reviewer_id
+join series on series.id = review.series_id;
