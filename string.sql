@@ -432,3 +432,9 @@ GROUP BY first_name , last_name;
 select title, rating, concat(first_name,' ', last_name) as nam from
 reviewers join review on reviewers.id = review.reviewer_id
 join series on series.id = review.series_id;
+
+-- view and mode
+create view full_review as select title, rating, concat(first_name,' ', last_name) as nam from
+reviewers join review on reviewers.id = review.reviewer_id
+join series on series.id = review.series_id;
+select * from full_review;
