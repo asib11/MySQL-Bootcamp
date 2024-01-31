@@ -438,3 +438,14 @@ create view full_review as select title, rating, concat(first_name,' ', last_nam
 reviewers join review on reviewers.id = review.reviewer_id
 join series on series.id = review.series_id;
 select * from full_review;
+-- having
+select title, avg(rating) from full_review group by title having count(rating); -- group by condition
+-- roll up
+select title , avg(rating) from full_review group by title with rollup ; -- represent total number of average
+
+-- server sql modes
+select @@global.sql_mode;
+select 3/0;
+show warnings;
+set session sql_mode = 'ERROR_FOR_DIVISION_BY_ZERO';
+
