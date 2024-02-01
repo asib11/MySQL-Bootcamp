@@ -447,5 +447,44 @@ select title , avg(rating) from full_review group by title with rollup ; -- repr
 select @@global.sql_mode;
 select 3/0;
 show warnings;
-set session sql_mode = 'ERROR_FOR_DIVISION_BY_ZERO';
+set session sql_mode = '';
+
+-- windows function
+CREATE TABLE employees (
+    emp_no INT PRIMARY KEY AUTO_INCREMENT,
+    department VARCHAR(20),
+    salary INT
+);
+INSERT INTO employees (department, salary) VALUES
+('engineering', 80000),
+('engineering', 69000),
+('engineering', 70000),
+('engineering', 103000),
+('engineering', 67000),
+('engineering', 89000),
+('engineering', 91000),
+('sales', 59000),
+('sales', 70000),
+('sales', 159000),
+('sales', 72000),
+('sales', 60000),
+('sales', 61000),
+('sales', 61000),
+('customer service', 38000),
+('customer service', 45000),
+('customer service', 61000),
+('customer service', 40000),
+('customer service', 31000),
+('customer service', 56000),
+('customer service', 55000);
+
+SELECT 
+    emp_no, 
+    department, 
+    salary, 
+    MIN(salary) OVER(),
+    MAX(salary) OVER()
+FROM employees;
+
+select salary, avg(salary) over(), salary- avg(salary) over() from employees;
 
